@@ -8,24 +8,24 @@ import java.io.*;
 public class BruteForce {
 
     String inputFileName;       // имя входного файла
-    int key;                    // ключ
+    // int key;                    // ключ
     String alphabet;            // алфавит (русский/английский/смешанный)
 
-    public BruteForce(String inputFileName, int key, String alphabet) {
+    public BruteForce(String inputFileName, String alphabet) {
         this.inputFileName = inputFileName;
-        this.key = key;
+        // this.key = key;
         this.alphabet = alphabet;
     }
 
     public int makeBruteForce(){
         int[] encodedChars = readFiftyChars();
 
-        for (int bruteKey = 1; bruteKey < this.alphabet.length(); bruteKey++) {
-            // int[] trialDecodedChars = new int[encodedChars.length];
+        for (int brutedKey = 1; brutedKey < this.alphabet.length(); brutedKey++) {
+
             for (int i = 0; i < encodedChars.length; i++) {
-                int newChar = trySymbolDecrypt(encodedChars[i], bruteKey);
+                int newChar = trySymbolDecrypt(encodedChars[i], brutedKey);
                 if(newChar == (int)(' ')){
-                    return bruteKey;
+                    return brutedKey;
                 }
             }
         }
@@ -56,7 +56,7 @@ public class BruteForce {
             // чтение посимвольно
             int symbol; // очередной считываемый символ
 
-            for (int i = 0; i <= chars.length ; i++) {
+            for (int i = 0; i <= chars.length - 1 ; i++) {
                 if((symbol = br.read())!=-1){
                     chars[i] = symbol;
                 } else
