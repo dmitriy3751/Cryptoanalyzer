@@ -1,68 +1,63 @@
-import java.util.HashMap;
-import java.util.Random;
+import java.io.*;
 
 /**
+ * ЗАМЕНЁН УНИВЕРСАЛЬНЫМ КЛАССОМ EncDecrypter
  * класс шифрования текста, используется шифр Цезаря
  * стоит помнить, что общее кол-во ключей для этого шифра равно размеру криптоалфавита
  */
 public class Encrypter {
 
-    private static final String russianAlphabet = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ0123456789,.!?:;-\\/ \"";
-    private static final String englishAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.!?:;-\\/ \"";
-
     String inputFileName;
     int key;
     String alphabet;
 
-    public static void main(String[] args) {
-        String text = "Допустим, мы устанавливаем сдвиг на 3. В таком случае А заменится на Г, Б станет Д,\n" +
-                "и так далее.";
-        int key = 67;
-
-        String russianAlphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ";
-        String englishAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        String symbols = ",.!?:;-\\/ ";
-        String digits = "0123456789";
-
-        String cryptoAlphabet = russianAlphabet + englishAlphabet + symbols + digits;
-
-        String encr = "";
-        // for (int i = 0; i < text.length(); i++) {
-        //    encr += cryptoAlphabet.charAt(new Random().nextInt(cryptoAlphabet.length() - 1));
-        //}
-
-        System.out.println(encr);
-    }
-
-    public Encrypter(String inputFileName, int key, int alphabet) {
+    public Encrypter(String inputFileName, int key, String alphabet) {
         /* конструктор, на входе:
         * inputFileName - название входного файла
         * key - ключ
-        * alphabet - выбор русского (0) или английского (1) алфавита */
+        * alphabet - русский или английский криптоалфавит */
 
         this.inputFileName = inputFileName;
         this.key = key;
-
-        if(alphabet == 0)
-            this.alphabet = Encrypter.russianAlphabet;
-        else
-            this.alphabet = Encrypter.englishAlphabet;
+        this.alphabet = alphabet;
 
     }
 
-    public void make_encryption(){
+    public void makeEncryption(){
         /*  метод, выполняющий шифрование */
+        // int symbol;
 
+        try (BufferedReader br = new BufferedReader (new FileReader(this.inputFileName));
+             BufferedWriter bw = new BufferedWriter(new FileWriter("encoded text.txt")))
+        {
+            // чтение посимвольно
+            int symbol;
+            while((symbol=br.read())!=-1){
+                int encryptedSymbol = this.encryptSymbol(symbol);
+                bw.write(encryptedSymbol);
+                // System.out.print((char)c);
+            }
+        } catch (FileNotFoundException fnfExc) {
+            System.out.println("Файл не найден! " + fnfExc);
+        } catch (IOException exc) {
+            System.out.println("Ошибка ввода-вывода: " + exc);
+        }
     }
 
-    private HashMap<Character, Integer> read_file(){
-        /* метод чтения текстового файла и возврата мапы частоты встречаемости символов */
-        HashMap<Character, Integer> alphabetMap = new HashMap<>();
+    private int encryptSymbol(int symbol){
+        // кодировка каждого символа
+        char testSymbolUppercase = Character.toUpperCase((char)(symbol));
+        System.out.println(testSymbolUppercase);
+        int symbolUppercased = Character.toUpperCase(symbol);
 
-        for (int i = 0; i < this.alphabet.length(); i++) {
-            alphabetMap.put(this.alphabet.charAt(i), 0);
+        int alphabetSymbIndex = this.alphabet.indexOf(symbolUppercased);
+        if(alphabetSymbIndex == -1)
+            return symbol;  // возврат неизменённого символа в случае, если он не обнаружен в криптоалфавите
+        else{
+            int encryptedSymbIndex = (alphabetSymbIndex + this.key) % this.alphabet.length();
+            int encryptedSymbol = (int)(this.alphabet.charAt(encryptedSymbIndex));
+            return encryptedSymbol;
         }
 
-        return alphabetMap;
     }
 }
