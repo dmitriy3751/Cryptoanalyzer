@@ -8,12 +8,10 @@ import java.io.*;
 public class BruteForce {
 
     String inputFileName;       // имя входного файла
-    // int key;                    // ключ
     String alphabet;            // алфавит (русский/английский/смешанный)
 
     public BruteForce(String inputFileName, String alphabet) {
         this.inputFileName = inputFileName;
-        // this.key = key;
         this.alphabet = alphabet;
     }
 

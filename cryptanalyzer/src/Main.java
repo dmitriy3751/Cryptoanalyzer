@@ -72,7 +72,7 @@ public class Main {
         if(checkFileExistence(inputFilename) && !alphabyte.equals("")){
             EncDecrypter actioner = new EncDecrypter(neededtoEncrypt, inputFilename, key, alphabyte);
             actioner.makeAction();
-            System.out.println("Процедура " + workMode + " завершена!");
+            System.out.println("Процедура " + workMode + " завершена! Итоговый файл находится в папке result.");
         } else {
             System.out.println("Введен неправильный путь к файлу и/или номер криптоалфавита!");
         }
@@ -84,8 +84,8 @@ public class Main {
             int cryptoAnalizeIntMode = console.nextInt();
             if(cryptoAnalizeIntMode == 1){                          // брутфорс
                 makeBruteForce(console);
-            } else if (cryptoAnalizeIntMode == 2){                  // статистический анализ
-
+            } else if (cryptoAnalizeIntMode == 2){
+                makeStatAnalysis(console);                          // статистический криптоанализ
             } else {
                 System.out.println("Введён неверный параметр выбора режима криптоанализа!");
             }
@@ -97,7 +97,7 @@ public class Main {
     }
 
     private static void makeBruteForce(Scanner console){
-        int cryptoAlphNumber;
+        int cryptoAlphNumber;   // выбранный криптоалфавит
 
         System.out.println("Выбран режим брутфорса. Введите путь к текстовому файлу для дешифровки.");
 
@@ -128,6 +128,39 @@ public class Main {
         }
     }
 
+    private static void makeStatAnalysis(Scanner console){
+        int cryptoAlphNumber;   // выбранный криптоалфавит
+
+        System.out.println("Выбран режим статистического криптоанализа. Введите путь к текстовому файлу для выборки статистики " +
+                "на незашифрованном файле.");
+
+        console.nextLine();
+        String controlFileName = console.nextLine();
+
+        System.out.println("Введите путь к зашифрованному текстовому файлу");
+
+        String encodedFilename = console.nextLine();
+
+        System.out.println("Выберите криптоалфавит: 1 - русский, 2 - английский, 3 - смешанный");
+
+        if (console.hasNextInt()) {
+            cryptoAlphNumber = console.nextInt();
+        } else {
+            System.out.println("Введён неверный номер криптоалфавита!");
+            return;
+        }
+        String alphabyte = chooseAlph(cryptoAlphNumber);
+
+        if(checkFileExistence(controlFileName) && checkFileExistence(encodedFilename) && !alphabyte.equals("")){
+            StatAnalysis statanalyser = new StatAnalysis(controlFileName, encodedFilename, alphabyte);
+            statanalyser.makeStatAnalysis();
+
+            System.out.println("Завершён процесс стат.анализа файла! Декодированный из " +
+                    encodedFilename + "файл находится в " + "result/stat analysised file.txt");
+        } else {
+            System.out.println("Введен неправильный путь к файлам и/или номер криптоалфавита!");
+        }
+    }
 
     private static boolean checkFileExistence(String inputFilename){
         // проверка существования входного файла
@@ -136,7 +169,12 @@ public class Main {
             return false;
         } else {
             File file = new File(inputFilename);
-            return file.exists();   // СДЕЛАТЬ TRY на SECURITYEXCEPTION!!!
+            try {
+                return file.exists();
+            } catch (SecurityException secExc){
+                System.out.println("ОС не разрешила доступ к файлу " + inputFilename);
+                return false;
+            }
         }
     }
 

@@ -49,7 +49,6 @@ public class EncDecrypter {
             while((symbol=br.read())!=-1){
                 int actionedSymbol = this.makeSymbolAction(symbol);
                 bw.write(actionedSymbol);
-
             }
         } catch (FileNotFoundException fnfExc) {
             System.out.println("Файл не найден! " + fnfExc);
