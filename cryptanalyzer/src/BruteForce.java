@@ -41,7 +41,10 @@ public class BruteForce {
             return symbol;  // возврат неизменённого символа в случае, если он не обнаружен в криптоалфавите
         else {
             // индекс символа в криптоалфавите, который получится в результате пробной дешифровки
-            int actionedSymbIndex = (alphabetSymbIndex + key) % this.alphabet.length();
+            int actionedSymbIndex = (alphabetSymbIndex - key) % this.alphabet.length();
+            if(actionedSymbIndex < 0)                               // если остаток по модулю окажется < 0
+                actionedSymbIndex += this.alphabet.length();
+
             return (int)(this.alphabet.charAt(actionedSymbIndex));    // возврат результирующего символа в криптоалфавите
         }
     }
