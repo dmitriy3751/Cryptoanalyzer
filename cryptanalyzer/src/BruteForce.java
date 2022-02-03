@@ -16,18 +16,25 @@ public class BruteForce {
     }
 
     public int makeBruteForce(){
-        int[] encodedChars = readFiftyChars();
+        int[] encodedChars = readHundredChars();
+        int[] decodedChars = new int[100];
 
         for (int brutedKey = 1; brutedKey < this.alphabet.length(); brutedKey++) {
 
+            // в цикле ниже - формирование расшифрованного текста на очередном подбираемом ключе brutedKey
             for (int i = 0; i < encodedChars.length; i++) {
-                int newChar = trySymbolDecrypt(encodedChars[i], brutedKey);
-                if(newChar == (int)(' ')){
+                int decodedChar = trySymbolDecrypt(encodedChars[i], brutedKey);
+                decodedChars[i] = decodedChar;
+            }
+
+            // в цилке ниже - проверка встречаемости .(пробел) или ,(пробел)
+            for(int i = 0; i < decodedChars.length - 2; i++){
+                if(((char)decodedChars[i] == '.' || (char)decodedChars[i] == ',') && (char)decodedChars[i+1] == ' '){
                     return brutedKey;
                 }
             }
         }
-        System.out.println("Не удалось сбрутить ключ!");
+
         return -1;
     }
 
@@ -49,9 +56,9 @@ public class BruteForce {
         }
     }
 
-    private int[] readFiftyChars(){
+    private int[] readHundredChars(){
         // метод считывания строки в 50 символов из файла
-        int[] chars = new int[50];   // массив считываемых символов
+        int[] chars = new int[100];   // массив считываемых символов
         try (BufferedReader br = new BufferedReader (new FileReader(this.inputFileName)))
         {
             // чтение посимвольно

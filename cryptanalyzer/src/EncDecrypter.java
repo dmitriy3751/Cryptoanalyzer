@@ -37,9 +37,9 @@ public class EncDecrypter {
         theDir.mkdirs();
 
         if(java.util.Objects.equals(this.neededToEncrypt, true))
-            outputFilename = theDir + File.separator + "encoded text.txt";
+            outputFilename = theDir + File.separator + "encoded.txt";
         else
-            outputFilename = theDir + File.separator + "decoded text.txt";
+            outputFilename = theDir + File.separator + "decoded.txt";
 
         try (BufferedReader br = new BufferedReader (new FileReader(this.inputFileName));
              BufferedWriter bw = new BufferedWriter(new FileWriter(outputFilename)))

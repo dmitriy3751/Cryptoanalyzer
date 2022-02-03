@@ -38,11 +38,15 @@ public class Main {
         int cryptoAlphNumber;
         String inputFilename;
         String workMode;
+        String outputFilename;
 
-        if(encDecMode == 1)
+        if(encDecMode == 1) {
             workMode = "шифрования";
-        else
+            outputFilename = "encoded.txt";
+        } else {
             workMode = "расшифрования";
+            outputFilename = "decoded.txt";
+        }
 
         System.out.println("Выбран режим " + workMode + " текста. Введите путь к текстовому файлу с исходным текстом.");
         console.nextLine();
@@ -72,7 +76,7 @@ public class Main {
         if(checkFileExistence(inputFilename) && !alphabyte.equals("")){
             EncDecrypter actioner = new EncDecrypter(neededtoEncrypt, inputFilename, key, alphabyte);
             actioner.makeAction();
-            System.out.println("Процедура " + workMode + " завершена! Итоговый файл находится в папке result.");
+            System.out.println("Процедура " + workMode + " завершена! Итоговый файл находится в result/" + outputFilename + ".");
         } else {
             System.out.println("Введен неправильный путь к файлу и/или номер криптоалфавита!");
         }
@@ -118,11 +122,20 @@ public class Main {
             BruteForce bruteforcer = new BruteForce(inputFilename, alphabyte);
             int brutedKey = bruteforcer.makeBruteForce();                     // получен ключ шифра
 
-            EncDecrypter actioner = new EncDecrypter(false, inputFilename, brutedKey, alphabyte);   // расшифровка
-            actioner.makeAction();
+            if(brutedKey != -1) {   // проверка, удалось ли сбрутить текст
 
-            System.out.println("Завершён процесс брутфорса файла! Ключ - " + brutedKey + ". Декодированный из " +
-                    inputFilename + "файл находится в " + "result/decoded text.txt");
+                EncDecrypter actioner = new EncDecrypter(false, inputFilename, brutedKey, alphabyte);   // расшифровка
+                actioner.makeAction();
+
+                String brutedKeyVariants = brutedKey + " + x*" + alphabyte.length();
+
+                System.out.println("Завершён процесс брутфорса файла! Ключ - (" + brutedKeyVariants + "), где x - " +
+                        "любое целое число от 0 (для вариантов, когда ключ больше мощности криптоалфавита)." +
+                        " Декодированный из " + inputFilename + " файл находится в " + "result/decoded.txt");
+            } else {
+                System.out.println("К сожалению, не удалось сбрутить ключ! Вероятно, в исходном незашифрованном тексте " +
+                        "не содержатся пробелы.");
+            }
         } else {
             System.out.println("Введен неправильный путь к файлу и/или номер криптоалфавита!");
         }
